@@ -12,20 +12,21 @@
 	<body>
 		<div id="error" class="hidden"></div>
 		<div id="container">
-			<button id="begin">begin</button>
-			<form id="submission" action="javascript:;">
-				<input type="text" id="submission-word" placeholder="word" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-				<button id="submission-button">&#8680;</button>
-			</form>
-			<div id="players">
-				<a id="players-link" href="../../">play again</a>
-				<div id="players-victory"></div>
-				<div id="players-info"></div>
+			<div id="header">
+				<button id="header-begin">begin</button>
+				<a id="header-again" href="../../">play again</a>
+				<form id="header-submission" action="javascript:;">
+					<input type="text" id="header-submission-word" placeholder="word" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+					<button id="header-submission-send">&#8680;</button>
+					<div id="header-submission-close" tabindex="0">x</div>
+				</form>
 			</div>
+			<div id="players"></div>
 			<div id="tree">
 				<div id="root"></div>
 			</div>
 			<div id="chain"></div>
+			<div id="footer"></div>
 		</div>
 	</body>
 </html>

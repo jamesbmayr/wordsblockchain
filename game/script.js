@@ -5,8 +5,8 @@
 
 	/* buildGame */
 		if (window.game.end) {
-			// victory section
-				buildVictory(window.game.victory, window.game.players)
+			// end section
+				buildEnd(window.game.players)
 		}
 		else {
 			// socket
@@ -26,8 +26,8 @@
 
 			// begin button & players
 				if (!window.game.start) {
-					document.getElementById("begin").setAttribute("active", true)
-					document.getElementById("begin").addEventListener("click", submitBegin)
+					document.getElementById("header-begin").setAttribute("active", true)
+					document.getElementById("header-begin").addEventListener("click", submitBegin)
 					document.getElementById("players").setAttribute("active", true)
 
 					buildPlayers(window.game.players)
@@ -35,7 +35,8 @@
 
 			// build page
 				else {
-					document.getElementById("submission").addEventListener("submit", submitWord)
+					document.getElementById("header-submission").addEventListener("submit", submitWord)
+					document.getElementById("header-submission-close").addEventListener("click", submitClose)
 					buildChain(window.game.chain)
 					buildTree( window.game.tree )
 				}
@@ -44,10 +45,7 @@
 /*** submits ***/
 	/* submitBegin */
 		function submitBegin(event) {
-			if (event.target.id !== "begin") {
-				//
-			}
-			else if (window.game.start) {
+			if (window.game.start) {
 				displayError("Game already started...")
 			}
 			else {
@@ -72,15 +70,24 @@
 				else if (window.plus) {
 					window.plus.removeAttribute("active")
 					window.plus = null
-					document.getElementById("submission").removeAttribute("active")
+					document.getElementById("header-submission").removeAttribute("active")
 				}
 
 			// select
 				else {
 					window.plus = event.target
 					window.plus.setAttribute("active", true)
-					document.getElementById("submission").setAttribute("active", true).focus()
+					document.getElementById("header-submission").setAttribute("active", true).focus()
 				}
+		}
+
+	/* submitClose */
+		function submitClose(event) {
+			// unselect
+				window.plus.removeAttribute("active")
+				window.plus = null
+				document.getElementById("header-submission").removeAttribute("active")
+				document.getElementById("header-submission-word").value = ""
 		}
 
 	/* submitWord */
@@ -89,10 +96,10 @@
 				if (window.game.end) {
 					displayError("Game already ended...")
 				}
-				else if (!window.plus || !document.getElementById("submission").getAttribute("active")) {
+				else if (!window.plus || !document.getElementById("header-submission").getAttribute("active")) {
 					displayError("No active branch...")
 				}
-				else if (!(/^[a-zA-Z]+$/).test(document.getElementById("submission-word").value)) {
+				else if (!(/^[a-zA-Z\s]+$/).test(document.getElementById("header-submission-word").value)) {
 					displayError("Letters only...")
 				}
 
@@ -101,7 +108,7 @@
 					// send data
 						var post = {
 							action: "submitWord",
-							word: document.getElementById("submission-word").value.trim().toLowerCase(),
+							word: document.getElementById("header-submission-word").value.trim().toLowerCase(),
 							parent: window.plus.parentNode.id
 						}
 						socket.send(JSON.stringify(post))
@@ -109,8 +116,8 @@
 					// unselect
 						window.plus.removeAttribute("active")
 						window.plus = null
-						event.target.removeAttribute("active")
-						event.target.value = ""
+						document.getElementById("header-submission").removeAttribute("active")
+						document.getElementById("header-submission-word").target.value = ""
 				}
 		}
 
@@ -127,11 +134,11 @@
 					buildPlayers(post.players)
 				}
 
-			// begin
-				if (post.begin !== undefined) {
-					document.getElementById("begin").removeAttribute("active")
+			// start
+				if (post.start !== undefined) {
+					document.getElementById("header-begin").removeAttribute("active")
+					document.getElementById("header-submission").addEventListener("submit", submitWord)
 					document.getElementById("players").removeAttribute("active")
-					document.getElementById("submission").addEventListener("submit", submitWord)
 				}
 
 			// message
@@ -149,9 +156,9 @@
 					buildTree(post.tree)
 				}
 
-			// victory
-				if (post.victory !== undefined) {
-					buildVictory(post.victory, post.players)
+			// end
+				if (post.end !== undefined) {
+					buildEnd(post.players)
 				}
 		}
 
@@ -167,7 +174,7 @@
 				"
 
 			// append to page
-				document.getElementById("players-info").innerHTML += content
+				document.getElementById("players").innerHTML += content
 		}
 
 	/* buildPlayers */
@@ -285,23 +292,20 @@
 				}
 		}
 
-	/* buildVictory */
-		function buildVictory(victory, players) {
+	/* buildEnd */
+		function buildEnd(players) {
 			// hide submission
 				if (window.plus) {
 					window.plus.removeAttribute("active")
 					window.plus = null
-					document.getElementById("submission").removeAttribute("active")
+					document.getElementById("header-submission").removeAttribute("active")
 				}
 
-			// display victors & play-again link
-				document.getElementById("players").setAttribute("active", true)
-				document.getElementById("players-victory").setAttribute("active", true).innerHTML = victory.join(" & ")
-				document.getElementById("players-link").setAttribute("active", true).focus()
-				window.game.victory = victory || []
+			// display play-again link
+				document.getElementById("header-again").setAttribute("active", true).focus()
 
 			// display players
-				document.getElementById("players-info").innerHTML = ""
+				document.getElementById("players").setAttribute("active", true).innerHTML = ""
 				buildPlayers(players)
 
 			// disconnect socket

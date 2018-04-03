@@ -19,7 +19,6 @@
 						request.game.players = {}
 						request.game.chain   = []
 						request.game.tree    = {}
-						request.game.victory = []
 
 					// create player
 						var player = createPlayer(request)

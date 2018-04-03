@@ -55,7 +55,7 @@
 
 								// send messages
 									for (var p in players) {
-										callback([players[p]], {success: true, chain: request.game.chain, tree: request.game.tree, begin: true})
+										callback([players[p]], {success: true, chain: request.game.chain, tree: request.game.tree, start: request.game.start})
 									}
 							}, 45000)
 					}
@@ -418,30 +418,17 @@
 						}
 					}
 
-				// tally points
-					var maximum = 0
-					for (var p in request.game.players) {
-						if (request.game.players[p].points > maximum) {
-							maximum = request.game.players[p].points
-						}
-					}
-
-					var winners = Object.keys(request.game.players).filter(function (p) {
-						return request.game.players[p].points == maximum
-					})
-
 				// set end
 					request.game.end = new Date().getTime()
-					request.game.victory = winners.map(function (winner) { return winner.name }) || []
 
 				// send messages
 					sendMessages(request, callback, [
 						[players, {success: true, message: "that completes the loop!"}, 0],
-						[players, {success: true, message: "who won?"}, 4000],
+						[players, {success: true, message: "the final scores?"}, 4000],
 						[players, {success: true, message: "3..."}, 7000],
 						[players, {success: true, message: "2..."}, 8000],
 						[players, {success: true, message: "1..."}, 9000],
-						[players, {success: true, victory: request.game.victory, players: request.game.players}, 10000]
+						[players, {success: true, end: request.game.end, players: request.game.players}, 10000]
 					])
 
 			}
