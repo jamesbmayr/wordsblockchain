@@ -1,0 +1,238 @@
+/*** main ***/
+	/* elements */
+		body {
+			position: fixed;
+			top: 0px;
+			left: 0px;
+			height: 100vh;
+			width: 100vw;
+			padding: 0px;
+			margin: 0px;
+			border: 0px;
+			overflow: hidden;
+			background-color: #dddddd;
+			color: #212121;
+			font-family: 'Bungee', Helvetica, sans-serif;
+			font-weight: bold;
+			font-size: 30px;
+			box-shadow: 0px 0px 25px #212121 inset;
+		}
+
+		a, a:visited, a:hover, a:focus {
+			text-decoration: none;
+			font-weight: bold;
+			outline: none;
+			cursor: pointer;
+			color: #212121;
+		}
+
+		a:hover, a:focus {
+			text-shadow: 0px 0px 50px #212121;
+		}
+
+		input, button, select, textarea {
+			font-weight: bold;
+			font-size: 30px;
+			font-family: 'Bungee', Helvetica, sans-serif;
+			outline: none;
+			cursor: pointer;
+			border: 10px solid #212121;
+			border-radius: 20px;
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			color: #212121;
+			background-color: #dddddd;
+			padding: 0px;
+			text-transform: uppercase;
+		}
+
+		button {
+			color: #dddddd;
+			background-color: #212121;
+			vertical-align: middle;
+		}
+
+		button:hover, button:focus, select:focus, textarea:focus, input:focus {
+			box-shadow: 0px 0px 50px #212121;
+		}
+
+		select:-moz-focusring {
+			color: transparent;
+			text-shadow: 0 0 0 #000;
+		}
+
+	/* conditions */
+		.hidden {
+			display: none;
+			pointer-events: none;
+		}
+
+		.invisible {
+			opacity: 0;
+			pointer-events: none;
+			transition: 2s;
+		}
+
+	/* sections */
+		#error {
+			position: fixed;
+			top: 2%;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 80vw;
+			z-index: 5;
+			padding: 10px;
+			box-shadow: 0px 0px 25px #212121;
+			background-color: #dddddd;		
+			opacity: 0;
+			color: #212121;
+			font-size: 100%;
+			text-align: center;
+			border: 10px solid #212121;
+			border-radius: 20px;
+			text-transform: uppercase;
+			pointer-events: none;
+		}
+
+		#wordzone {
+			height: 100vh;
+			width: 100vw;
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			overflow: hidden;
+			user-select: none;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			-o-user-select: none;
+			pointer-events: none;
+			z-index: -1;
+		}
+
+		.word {
+			position: absolute;
+			font-size: 50px;
+			font-family: 'Bungee', Helvetica, sans-serif;
+			color: #777777;
+			filter: blur(3px);
+			text-transform: uppercase;
+		}
+
+/*** vendor prefixes ***/
+	/* scrollbars */
+		::-webkit-scrollbar {
+			width: 0 !important;
+		}
+
+		::-moz-scrollbar {
+			width: 0 !important;
+		}
+
+		::-ms-scrollbar {
+			width: 0 !important;
+		}
+
+		::-o-scrollbar {
+			width: 0 !important;
+		}
+
+	/* placeholders */
+		::-webkit-input-placeholder {
+			font-weight: bold;
+			font-family: 'Bungee', Helvetica, sans-serif;
+			text-align: center;
+			color: #777777;
+			text-transform: uppercase;
+			padding: 10px;
+		}
+
+		::-moz-placeholder {
+			font-weight: bold;
+			font-family: 'Bungee', Helvetica, sans-serif;
+			text-align: center;
+			color: #777777;
+			text-transform: uppercase;  
+		}
+
+		::-o-input-placeholder {
+			font-weight: bold;
+			font-family: 'Bungee', Helvetica, sans-serif;
+			text-align: center;
+			color: #777777;
+			text-transform: uppercase;
+		}
+
+		:-ms-input-placeholder {
+			font-weight: bold;
+			font-family: 'Bungee', Helvetica, sans-serif;
+			text-align: center;
+			color: #777777;
+			text-transform: uppercase;
+		}
+
+/*** colors ***/
+	/* colortext */
+		.redtext, a.redtext {
+			color: #ff6b69;
+		}
+
+		.orangetext, a.orangetext {
+			color: #d89258;
+		}
+
+		.greentext, a.greentext {
+			color: #67b873;
+		}
+
+		.bluetext, a.bluetext {
+			color: #7493e4;
+		}
+
+		.purpletext, a.purpletext {
+			color: #9367b5;
+		}
+
+	/* background color */
+		[color="red"] {
+			background-color: #ff6b69;
+		}
+
+		[color="brown"] {
+			background-color: #a17c6f;
+		}
+
+		[color="orange"] {
+			background-color: #d89258;
+		}
+
+		[color="yellow"] {
+			background-color: #dcc60e;
+		}
+
+		[color="green"] {
+			background-color: #67b873;
+		}
+
+		[color="cyan"] {
+			background-color: #4fc5d4;
+		}
+
+		[color="blue"] {
+			background-color: #7493e4;
+		}
+
+		[color="purple"] {
+			background-color: #9367b5;
+		}
+
+		[color="magenta"] {
+			background-color: #ed7ba2;
+		}
+
+		[color="gray"] {
+			background-color: #8fb7ca;
+		}

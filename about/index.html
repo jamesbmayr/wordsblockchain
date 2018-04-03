@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>WordsBlockChain</title>
+		<script node> getAsset("meta") </script>node>
+		<script node> getAsset("google fonts") </script>node>
+		<link rel="shortcut icon" type="image/png" href="logo.png"/>
+		<link rel="stylesheet" type="text/css" href="./stylesheet.css"/>
+		<script type="text/javascript" src="./script.js"></script>
+		<script>window.examples = ['<script node>getAsset("examples").join("','")</script>node>']</script>
+	</head>
+	<body>
+		<div id="wordzone"></div>
+		<div id="error" class="hidden"></div>
+		<div id="container">
+			<div id="container-inner">
+				<a id="title" class="section" href="../../"><div id="logotype"></div></a>
+				<div id="about" class="section">
+					<div class="header">About</div>
+					<div class="content">
+						<span class="greentext">Words</span><span class="redtext">Block</span><span class="bluetext">Chain</span> is a fast-paced party game of linking words in a blockchain.
+					</div>
+				</div>
+				<div id="rules" class="section">
+					<div class="header">Launch</div>
+					<div class="content">
+						Every game has a unique 4-character id. Just go to the <a href="./" target="_blank" class="orangetext">homepage</a> to start a new one - or join your friend's!
+						<br><br>
+						This game is all about building a <span class="bluetext">chain</span> of <span class="greentext">compound</span> - that is, two words combined into one, like <span class="purpletext">flashlight</span> and <span class="purpletext">lighthouse</span>.
+					</div>
+				</div>
+				<div id="rules" class="section">
+					<div class="header">Gameplay</div>
+					<div class="content">
+						Add a new compound <span class="greentext">word</span> by overlapping with an existing one. Touch a <span class="greentext">+</span> to add this new branch to the <span class="greentext">tree</span>.
+						<br><br>
+						When <span class="bluetext">5</span> words are built off of yours, you get <span class="bluetext">points</span>! Your word locks in as a block - the top block on the <span class="bluetext">chain</span>.
+						<br><br>
+						The game <span class="redtext">ends</span> when a player completes the circle - locking in the word that started the <span class="bluetext">chain</span>. All remaining words on the <span class="greentext">tree</span> earn points too, and whoever has the most points <span class="redtext">wins</span>!
+					</div>
+				</div>
+				<div id="rules" class="section">
+					<div class="header">Words</div>
+					<div class="content">
+						What words qualify? Well, that's up to the players - but we recommend:
+						<br><br>
+						<li>1 syllable of overlapping <span class="purpletext">sound</span></li>
+						<li>or 1 syllable of similar <span class="purpletext">letters</span></li>
+					</div>
+				</div>
+				<div id="feedback" class="section">
+					<div class="header">Feedback</div>
+					<div class="content">
+						<textarea id="feedback-text" rows="4" placeholder="your feedback" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+						<input type="email" id="feedback-email" placeholder="email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/><button id="feedback-submit" value="submit">&#8680;</button>
+					</div>
+				</div>
+				<div id="code" class="section">
+					<div class="header">Code</div>
+					<div class="content">
+						The app is powered by <span class="greentext">nodeJS</span> and <span class="bluetext"><a href="https://www.npmjs.com/package/websocket" target="_blank">websockets</a></span>, written in 100% raw <span class="redtext">javascript</span>. 
+						<br><br>
+						See the latest updates on <a href="https://www.github.com/jamesbmayr/wordsblockchain" target="_blank" class="orangetext">GitHub</a>.
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

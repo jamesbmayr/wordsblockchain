@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>WordsBlockChain</title>
+		<script node> getAsset("meta") </script>node>
+		<script node> getAsset("google fonts") </script>node>
+		<link rel="shortcut icon" type="image/png" href="logo.png"/>
+		<link rel="stylesheet" type="text/css" href="./stylesheet.css"/>
+		<script type="text/javascript" src="./script.js"></script>
+		<script>window.game = <script node>JSON.stringify(sanitizeObject(request.game))</script>node></script>
+	</head>
+	<body>
+		<div id="error" class="hidden"></div>
+		<div id="container">
+			<button id="begin">begin</button>
+			<form id="submission" action="javascript:;">
+				<input type="text" id="submission-word" placeholder="word" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+				<button id="submission-button">&#8680;</button>
+			</form>
+			<div id="players">
+				<a id="players-link" href="../../">play again</a>
+				<div id="players-victory"></div>
+				<div id="players-info"></div>
+			</div>
+			<div id="tree">
+				<div id="root"></div>
+			</div>
+			<div id="chain"></div>
+		</div>
+	</body>
+</html>

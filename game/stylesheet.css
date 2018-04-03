@@ -1,0 +1,153 @@
+/*** page ***/
+	html, body {
+		height: 100%;
+		width: 100%;
+	}
+
+	/* container */
+		#container {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			text-align: center;
+			min-height: 100vh;
+			width: 100vw;
+			background-color: #dddddd;
+		}
+
+/*** begin ***/
+	#begin {
+		position: fixed;
+		top: 0px;
+		left: 0px;
+		margin: 10px;
+		width: calc(100vw - 20px);
+		height: auto;
+		font-size: 125%;
+		padding: 10px;
+		z-index: 2;
+	}
+
+	#begin:not([active]) {
+		pointer-events: none;
+		display: none;
+	}
+
+/*** submission ***/
+	#submission {
+		position: fixed;
+		top: 0px;
+		left: 0px;
+		margin: 10px;
+		width: calc(100vw - 20px);
+		height: auto;
+		font-size: 125%;
+		padding: 10px;
+		z-index: 2;
+	}
+
+	#submission:not([active]) {
+		pointer-events: none;
+		display: none;
+	}
+
+	#submission-word {
+
+	}
+
+	#submission-button {
+
+	}
+
+/*** players ***/
+	#players {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		height: calc(100vh - 50px);
+		width: 100vw;
+		border: 0px solid #212121;
+		border-bottom-width: 50px;
+	}
+
+	#players:not([active]) {
+		pointer-events: none;
+		display: none;
+	}
+
+	/* victory */
+		#players-link {
+			position: fixed;
+			top: 0px;
+			left: 0px;
+			margin: 10px;
+			width: calc(100vw - 20px);
+			height: auto;
+			font-size: 125%;
+			padding: 20px 0px 20px 0px;
+			background-color: #212121;
+			color: #dddddd;
+			border-radius: 20px;
+			z-index: 2;
+		}
+
+		#players-link:not([active]) {
+			pointer-events: none;
+			display: none;
+		}
+
+		#players-victory:not([active]) {
+			pointer-events: none;
+			display: none;
+		}
+
+	/* info */
+		#players-info {
+			position: absolute;
+			bottom: 0px;
+			width: 100vw;
+			height: auto;
+			max-height: calc(100vh - 150px);
+			padding: 100px 0px 0px 0px;
+			overflow: scroll;
+		}
+
+		.player {
+			position: relative;
+			bottom: 0px;
+			padding: 20px 0px 20px 0px;
+			margin: 10px;
+			width: calc(100% - 20px);
+			height: auto;
+			font-size: 125%;
+			user-select: none;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			-o-user-select: none;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			cursor: default;
+			color: #dddddd;
+			border-radius: 20px;
+			text-align: center;
+			text-transform: uppercase;
+		}
+
+		.player-name {
+			margin-left: 10px;
+		}
+
+		.player-score {
+			margin-left: 10px;
+		}
+
+/*** tree ***/
+	#tree {
+
+	}
+
+
+/*** chain ***/
+
+

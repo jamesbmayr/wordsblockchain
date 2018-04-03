@@ -1,0 +1,254 @@
+/*** tools ***/
+	/* isNumLet */
+		function isNumLet(string) {
+			return (/^[a-z0-9A-Z_\s]+$/).test(string)
+		}
+
+	/* isEmail */
+		function isEmail(string) {
+			return (/[a-z0-9!#$%&\'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/).test(string)
+		}
+
+	/* sanitizeString */
+		function sanitizeString(string) {
+			if (string.length > 0) {
+				return string.replace(/[^a-zA-Z0-9_\s\!\@\#\$\%\^\&\*\(\)\+\=\-\[\]\\\{\}\|\;\'\:\"\,\.\/\<\>\?]/gi, "")
+			}
+			else {
+				return ""
+			}
+		}
+
+	/* chooseRandom */
+		function chooseRandom(options) {
+			try {
+				if (!Array.isArray(options)) {
+					return false
+				}
+				else {
+					return options[Math.floor(Math.random() * options.length)]
+				}
+			}
+			catch (error) {
+				logError(error)
+				return false
+			}
+		}
+
+/*** displays ***/
+	/* displayError */
+		var error = document.getElementById("error")
+		var errorFadein = null
+		var errorFadeout = null
+
+		function displayError(message) {
+			var error = document.getElementById("error")
+				error.textContent = message || "unknown error"
+				error.className = ""
+				error.style.opacity = 0
+			
+			if (typeof errorFadein  !== "undefined") { clearInterval(errorFadein)  }
+			if (typeof errorFadeout !== "undefined") { clearInterval(errorFadeout) }
+
+			errorFadein = setInterval(function() { // fade in
+				error.className = ""
+				var opacity = Number(error.style.opacity) * 100
+
+				if (opacity < 100) {
+					error.style.opacity = Math.ceil( opacity + ((100 - opacity) / 10) ) / 100
+				}
+				else {
+					clearInterval(errorFadein)
+					if (typeof errorFadeout !== "undefined") { clearInterval(errorFadeout) }
+					
+					errorFadeout = setInterval(function() { // fade out
+						var opacity = Number(error.style.opacity) * 100
+
+						if (opacity > 0.01) {
+							error.style.opacity = Math.floor(opacity - ((101 - opacity) / 10) ) / 100
+						}
+						else {
+							clearInterval(errorFadeout)
+							if (typeof errorFadein !== "undefined") { clearInterval(errorFadein) }
+
+							error.className = "hidden"
+							error.style.opacity = 0
+						}
+					}, 100)
+				}
+			}, 100)
+		}
+
+	/* buildWords */
+		function buildWords(count, infinite) {
+			wordWait     = 0
+			wordMax      = count || 20
+			wordContinue = infinite ? 1 : (-1 * count)
+			wordLoop  = setInterval(animateWords, 50)
+		}
+
+	/* animateWords */
+		function animateWords() {
+			window.requestAnimationFrame(function() {
+				// get words
+					var words = Array.prototype.slice.call( document.getElementsByClassName("word") )
+					var wordZone = document.getElementById("wordzone")
+					var wordCount = words.length
+
+				// reduce wordWait
+					if (wordWait) {
+						wordWait--
+					}
+					else {
+						wordWait = 5
+					}
+
+				// create words
+					if (!wordWait && (wordCount < wordMax) && wordContinue) {
+						// loops
+							wordCount++
+							wordContinue++
+
+						// create element
+							var direction = ["left", "right", "up", "down"][Math.floor(Math.random() * 4)]
+							var word = document.createElement("div")
+								word.className = "word"
+								word.setAttribute("speed", Math.round(Math.random() * 5) + 10)
+								word.setAttribute("direction", direction)
+
+						// text
+							if (window.examples) {
+								word.innerText = chooseRandom(window.examples)
+							}
+							else {
+								word.innerText = "error"
+							}
+
+						// place by direction
+							if (direction == "up") {
+								word.style.left = Math.round(Math.random() * (window.innerWidth - 300)) + 50 + "px"
+								word.style.top = window.innerHeight + 100 + "px"
+							}
+							else if (direction == "down") {
+								word.style.left = Math.round(Math.random() * (window.innerWidth - 300)) + 50 + "px"
+								word.style.top = -400 + "px"
+							}
+							else if (direction == "left") {
+								word.style.left = window.innerWidth + 300 + "px"
+								word.style.top = Math.round(Math.random() * (window.innerHeight - 100)) + 50 + "px"
+							}
+							else if (direction == "right") {
+								word.style.left = -400 + "px"
+								word.style.top = Math.round(Math.random() * (window.innerHeight - 100)) + 50 + "px"
+							}
+
+						wordZone.appendChild(word)
+					}
+
+				// end ?
+					if (!wordContinue && !wordCount) {
+						clearInterval(wordLoop)
+					}
+
+				// move words
+					else {
+						for (var w in words) {
+							// get data
+								var direction = words[w].getAttribute("direction") || "up"
+								var speed     = Number(words[w].getAttribute("speed")) || 10
+								var top       = Number(words[w].style.top.replace("px", "")) || 0
+								var left      = Number(words[w].style.left.replace("px", "")) || 0
+
+							// move by direction
+								if (direction == "up") {
+									if (top - speed < -100) {
+										wordZone.removeChild(words[w])
+									}
+									else {
+										words[w].style.top = top - speed + "px"
+									}
+								}
+								else if (direction == "down") {
+									if (top + speed > window.innerHeight + 100) {
+										wordZone.removeChild(words[w])
+									}
+									else {
+										words[w].style.top = top + speed + "px"
+									}
+								}
+								else if (direction == "left") {
+									if (left - speed < -400) {
+										wordZone.removeChild(words[w])
+									}
+									else {
+										words[w].style.left = left - speed + "px"
+									}
+								}
+								else if (direction == "right") {
+									if (left + speed > window.innerWidth + 400) {
+										wordZone.removeChild(words[w])
+									}
+									else {
+										words[w].style.left = left + speed + "px"
+									}
+								}
+
+							// safari hack
+								words[w].style.display = "none"
+								words[w].offsetHeight
+								words[w].style.display = "block"
+						}
+					}
+
+
+			})
+		}
+
+/*** connections ***/
+	/* sendPost */
+		function sendPost(post, callback) {
+			var request = new XMLHttpRequest()
+				request.open("POST", location.pathname, true)
+				request.onload = function() {
+					if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+						callback(JSON.parse(request.responseText) || {success: false, message: "unknown error"})
+					}
+					else {
+						callback({success: false, readyState: request.readyState, message: request.status})
+					}
+				}
+				request.send(JSON.stringify(post))
+		}
+		
+	/* socket */
+		function createSocket() {
+			socket = new WebSocket(location.href.replace("http","ws"))
+
+			// open
+				socket.onopen = function() {
+					socket.send(null)
+				}
+
+			// error
+				socket.onerror = function(error) {
+					console.log(error)
+				}
+
+			// close
+				socket.onclose = function() {
+					socket = null
+				}
+
+			// message
+				socket.onmessage = function(message) {
+					try {
+						var post = JSON.parse(message.data)
+						if (post && (typeof post == "object")) {
+							receivePost(post)
+						}
+					}
+					catch (error) {
+						console.log(error)
+					}
+				}
+		}
