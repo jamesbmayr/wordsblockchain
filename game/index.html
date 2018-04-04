@@ -13,7 +13,7 @@
 		<div id="error" class="hidden"></div>
 		<div id="container">
 			<div id="header">
-				<button id="header-begin">begin</button>
+				<button id="header-begin">begin - <script node>request.game.id</script>node></button>
 				<a id="header-again" href="../../">play again</a>
 				<form id="header-submission" action="javascript:;">
 					<input type="text" id="header-submission-word" placeholder="word" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
@@ -22,10 +22,12 @@
 				</form>
 			</div>
 			<div id="players"></div>
-			<div id="tree">
-				<div id="root"></div>
+			<div id="game">
+				<div id="tree">
+					<div id="root"></div>
+				</div>
+				<div id="chain"></div>
 			</div>
-			<div id="chain"></div>
 			<div id="footer"></div>
 		</div>
 	</body>

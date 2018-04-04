@@ -37,8 +37,8 @@
 				else {
 					document.getElementById("header-submission").addEventListener("submit", submitWord)
 					document.getElementById("header-submission-close").addEventListener("click", submitClose)
-					buildChain(window.game.chain)
-					buildTree( window.game.tree )
+					buildChain(window.game.chain, true)
+					buildTree( window.game.tree,  true)
 				}
 		}
 
@@ -67,7 +67,7 @@
 				}
 
 			// unselect
-				else if (window.plus) {
+				else if (window.plus && (window.plus.parentNode.id == event.target.parentNode.id)) {
 					window.plus.removeAttribute("active")
 					window.plus = null
 					document.getElementById("header-submission").removeAttribute("active")
@@ -75,9 +75,14 @@
 
 			// select
 				else {
+					if (window.plus) {
+						window.plus.removeAttribute("active")
+					}
+
 					window.plus = event.target
 					window.plus.setAttribute("active", true)
-					document.getElementById("header-submission").setAttribute("active", true).focus()
+					document.getElementById("header-submission").setAttribute("active", true)
+					document.getElementById("header-submission").focus()
 				}
 		}
 
@@ -124,6 +129,8 @@
 /*** receives ***/
 	/* receivePost */
 		function receivePost(post) {
+			console.log(post)
+
 			// redirect
 				if (post.location !== undefined) {
 					window.location = post.location
@@ -166,15 +173,21 @@
 	/* buildPlayer */
 		function buildPlayer(player) {
 			// construct HTML
-				var content = "\
-					<div class='player' id='" + player.id + "' color='" + player.color + "'>\
-						<span class='player-name'>" + player.name + "</span>\
-						<span class='player-score'>" + (player.score || "") + "</span>\
-					</div>\
-				"
+				var outer = document.createElement("div")
+					outer.className = "player"
+					outer.id = player.id
+					outer.setAttribute("color", player.color)
+				document.getElementById("players").prepend(outer)
 
-			// append to page
-				document.getElementById("players").innerHTML += content
+				var inner = document.createElement("span")
+					inner.className = "player-name"
+					inner.innerText = player.name
+				outer.append(inner)
+
+				var inner = document.createElement("span")
+					inner.className = "player-score"
+					inner.innerText = player.score || ""
+				outer.append(inner)
 		}
 
 	/* buildPlayers */
@@ -198,9 +211,9 @@
 		}
 
 	/* buildChain */
-		function buildChain(chain) {
+		function buildChain(chain, reset) {
 			// same
-				var oldBlocks = window.game.chain.length ? window.game.chain.map(function (block) { return block.id }) :  []
+				var oldBlocks = reset ? [] : (window.game.chain.length ? window.game.chain.map(function (block) { return block.id }) : [])
 				var newBlocks =                                        chain.map(function (block) { return block.id }) || []
 				if (oldBlocks.join(",") == newBlocks.join(",")) {
 					//
@@ -218,25 +231,32 @@
 						for (var n in newBlocks) {
 							var block = chain.find(function (block) { return block.id == newBlocks[n] }) || {}
 
-							content += "\
-								<div class='block' id='" + block.id + "' color='" + block.color + "'>\
-									<div class='block-word'>" + block.word + "</div>\
-									<div class='block-player'>" + block.player + "</div>\
-								</div>\
-							"
+							var outer = document.createElement("div")
+								outer.className = "block"
+								outer.id = block.id
+								outer.setAttribute("color", block.color)
+							document.getElementById("chain").prepend(outer)
+
+							var inner = document.createElement("div")
+								inner.className = "block-word"
+								inner.innerText = block.word
+							outer.append(inner)
+
+							var inner = document.createElement("div")
+								inner.className = "block-player"
+								inner.innerText = block.player || ""
+							outer.append(inner)
 						}
 
-						document.getElementById("chain").innerHTML = content + document.getElementById("chain").innerHTML
-
 					// update chain
-						window.game.chain = chain
+						window.game.chain = chain || []
 				}
 		}
 
 	/* buildTree */
-		function buildTree(tree) {
+		function buildTree(tree, reset) {
 			// same
-				var oldBranches = findBranchIds((window.game.tree || {}), []) || []
+				var oldBranches = reset ? [] : (findBranchIds((window.game.tree || {}), []) || [])
 				var newBranches = findBranchIds((            tree || {}), []) || []
 				if (oldBranches.join(",") == newBranches.join(",")) {
 					//
@@ -274,21 +294,25 @@
 							var parent = branch.parent ? (document.getElementById(branch.parent) || null) : document.getElementById("root")
 
 							// construct HTML
-								var content = "\
-									<div class='branch' id='" + branch.id + "'>\
-										<div class='branch-word'>" + block.word + "</div>\
-										<div class='branch-player'>" + block.player + "</div>\
-										<button class='branch-plus'>+</button>\
-									</div>\
-								"
+								var outer = document.createElement("div")
+									outer.className = "branch"
+									outer.id = branch.id
+								parent.append(outer)
 
-							// append to parent
-								parent.innerHTML += content
-								Array.from(document.querySelectorAll("#" + branch.id + " .branch-plus"))[0].addEventListener("click", submitBranch)
+								var inner = document.createElement("div")
+									inner.className = "branch-word"
+									inner.innerText = branch.word
+								outer.append(inner)
+
+								var button = document.createElement("button")
+									button.className = "branch-plus"
+									button.innerText = "+"
+									button.addEventListener("click", submitBranch)
+								outer.append(button)
 						}
 
 					// update tree
-						window.game.tree = tree
+						window.game.tree = tree || {}
 				}
 		}
 
@@ -302,7 +326,8 @@
 				}
 
 			// display play-again link
-				document.getElementById("header-again").setAttribute("active", true).focus()
+				document.getElementById("header-again").setAttribute("active", true)
+				document.getElementById("header-again").focus()
 
 			// display players
 				document.getElementById("players").setAttribute("active", true).innerHTML = ""
@@ -331,7 +356,7 @@
 							}
 
 						// child objects --> recursion
-							else if (typeof parameter == "object") {
+							else if (typeof obj[parameter] == "object") {
 								ids = findBranchIds(obj[parameter], ids)
 							}
 					}

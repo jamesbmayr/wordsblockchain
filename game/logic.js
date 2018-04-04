@@ -20,12 +20,25 @@
 
 				// begin
 					else {
-						request.game.updated = request.game.start = new Date().getTime()
-						var players = Object.keys(request.game.players)
+						// start game
+							request.game.updated = request.game.start = new Date().getTime()
 
-						// instructions
+						// get players
+							var players = Object.keys(request.game.players)
+
+						// get a word --> create and append branch
+							for (var x = 0; x < 3; x++) {
+								request.post.word = main.chooseRandom(main.getAsset("words"))
+						
+								var branch = createBranch(request)
+									branch.player = false
+
+								request.game.tree[branch.id] = branch
+							}
+
+						// messages & content
 							sendMessages(request, callback, [
-								[players, {success: true, message: "3..."}, 0],
+								[players, {success: true, message: "3...", start: request.game.start}, 0],
 								[players, {success: true, message: "2..."}, 1000],
 								[players, {success: true, message: "1..."}, 2000],
 								[players, {success: true, message: "this game is all about compound words"}, 3000],
@@ -38,26 +51,9 @@
 								[players, {success: true, message: "complete the circle to end the game - what will the starting word be?"}, 36000],
 								[players, {success: true, message: "3..."}, 41000],
 								[players, {success: true, message: "2..."}, 42000],
-								[players, {success: true, message: "1..."}, 43000]
+								[players, {success: true, message: "1..."}, 43000],
+								[players, {success: true, chain: request.game.chain, tree: request.game.tree}, 45000]
 							])
-
-						// block
-							setTimeout(function() {
-								// get a word --> create and append branch
-									for (var x = 0; x < 3; x++) {
-										request.post.word = main.chooseRandom(main.getAsset("words"))
-								
-										var branch = createBranch(request)
-											branch.player = null
-
-										request.game.tree[branch.id] = branch
-									}
-
-								// send messages
-									for (var p in players) {
-										callback([players[p]], {success: true, chain: request.game.chain, tree: request.game.tree, start: request.game.start})
-									}
-							}, 45000)
 					}
 			}
 			catch (error) {
@@ -91,11 +87,11 @@
 						var blocks  = request.game.chain.map(function (block) { return block.word })
 						var siblings = []
 						var parent = findBranch(request.game.tree, request.post.parent)
-							parent.forEach(function (parameter) {
-								if (typeof parameter == "object") {
-									siblings.push(parameter.word)
+							for (var parameter in parent) {
+								if (typeof parent[parameter] == "object") {
+									siblings.push(parent[parameter].word)
 								}
-							})
+							}
 
 						// more errors
 							if (!parent || typeof parent !== "object") {
@@ -138,9 +134,8 @@
 									}
 
 								// send results
-									for (var p in players) {
-										callback([players[p]], {success: true, chain: request.game.chain, tree: request.game.tree})
-									}
+									var players = Object.keys(request.game.players)
+									callback(players, {success: true, chain: request.game.chain, tree: request.game.tree})
 
 								// end game ?
 									if (end) {
@@ -239,7 +234,7 @@
 		function createBranch(request) {
 			try {
 				var branch = {
-					id:     main.generateRandom(8),
+					id:     main.generateRandom(null, 8),
 					word:   request.post.word.toLowerCase(),
 					player: request.session.id,
 					points: 0

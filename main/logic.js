@@ -303,7 +303,7 @@
 			try {
 				var newObject = {}
 				for (var p in object) {
-					if (typeof object[p] !== "object") {
+					if ((typeof object[p] !== "object") || Array.isArray(object[p])) {
 						newObject[p] = object[p]
 					}
 					else if (p == "connection") {
