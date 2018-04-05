@@ -37,6 +37,7 @@
 				else {
 					document.getElementById("header-submission").addEventListener("submit", submitWord)
 					document.getElementById("header-submission-close").addEventListener("click", submitClose)
+					document.getElementById("game").setAttribute("active", true)
 					buildChain(window.game.chain, true)
 					buildTree( window.game.tree,  true)
 				}
@@ -59,7 +60,7 @@
 	/* submitBranch */
 		function submitBranch(event) {
 			// error
-				if (event.target.className !== "branch-plus") {
+				if (event.target.className !== "plus") {
 					//
 				}
 				else if (window.game.end) {
@@ -67,7 +68,7 @@
 				}
 
 			// unselect
-				else if (window.plus && (window.plus.parentNode.id == event.target.parentNode.id)) {
+				else if (window.plus && (window.plus.parentNode.parentNode.id == event.target.parentNode.parentNode.id)) {
 					window.plus.removeAttribute("active")
 					window.plus = null
 					document.getElementById("header-submission").removeAttribute("active")
@@ -114,7 +115,7 @@
 						var post = {
 							action: "submitWord",
 							word: document.getElementById("header-submission-word").value.trim().toLowerCase(),
-							parent: window.plus.parentNode.id
+							parent: window.plus.parentNode.parentNode.id
 						}
 						socket.send(JSON.stringify(post))
 
@@ -122,15 +123,13 @@
 						window.plus.removeAttribute("active")
 						window.plus = null
 						document.getElementById("header-submission").removeAttribute("active")
-						document.getElementById("header-submission-word").target.value = ""
+						document.getElementById("header-submission-word").value = ""
 				}
 		}
 
 /*** receives ***/
 	/* receivePost */
 		function receivePost(post) {
-			console.log(post)
-
 			// redirect
 				if (post.location !== undefined) {
 					window.location = post.location
@@ -146,6 +145,7 @@
 					document.getElementById("header-begin").removeAttribute("active")
 					document.getElementById("header-submission").addEventListener("submit", submitWord)
 					document.getElementById("players").removeAttribute("active")
+					document.getElementById("game").setAttribute("active", true)
 				}
 
 			// message
@@ -186,7 +186,7 @@
 
 				var inner = document.createElement("span")
 					inner.className = "player-score"
-					inner.innerText = player.score || ""
+					inner.innerText = player.points || ""
 				outer.append(inner)
 		}
 
@@ -226,26 +226,33 @@
 							return oldBlocks.indexOf(block) == -1
 						}) || []
 
-					// construct HTML
-						var content = ""
+					// loop through
 						for (var n in newBlocks) {
 							var block = chain.find(function (block) { return block.id == newBlocks[n] }) || {}
+							var possibility = document.getElementById(block.id)
 
-							var outer = document.createElement("div")
-								outer.className = "block"
-								outer.id = block.id
-								outer.setAttribute("color", block.color)
-							document.getElementById("chain").prepend(outer)
+							// already exists
+								if (possibility) {
+									possibility.className = "block"
+									possibility.firstChild.remove()
+									possibility.lastChild.setAttribute("color", block.color)
+								}
 
-							var inner = document.createElement("div")
-								inner.className = "block-word"
-								inner.innerText = block.word
-							outer.append(inner)
+							// construct HTML
+								else {
+									var topBlock = Array.from(document.querySelectorAll(".block"))[0]
 
-							var inner = document.createElement("div")
-								inner.className = "block-player"
-								inner.innerText = block.player || ""
-							outer.append(inner)
+									var outer = document.createElement("div")
+										outer.className = "block"
+										outer.id = block.id
+									document.getElementById("game").insertBefore(outer, topBlock)
+
+									var inner = document.createElement("div")
+										inner.className = "word"
+										inner.innerText = block.word
+										inner.setAttribute("color", block.color)
+									outer.append(inner)
+								}							
 						}
 
 					// update chain
@@ -265,50 +272,50 @@
 			// different
 				else {
 					// find differences
-						newBranches = newBranches.filter(function (branch) {
-							return oldBranches.indexOf(branch) == -1
-						}) || []
-
 						var deadBranches = oldBranches.filter(function (branch) {
 							return newBranches.indexOf(branch) == -1
 						}) || []
 
+						newBranches = newBranches.filter(function (branch) {
+							return oldBranches.indexOf(branch) == -1
+						}) || []
+
 					// eliminate old branches
 						for (var d in deadBranches) {
-							var branch = findBranch(window.tree, deadBranches[d]) || null
+							var branch = findBranch(window.game.tree, deadBranches[d]) || null
+							var possibility = document.getElementById(deadBranches[d])
 
-							// parent exists in blockchain
-								if (window.game.chain.find(function(block) { return block.id == branch.parent })) {
-									document.getElementById(branch.parent).append(document.getElementById(deadBranches[d]))
-								}
-
-							// parent doesn't exist
-								else {
-									document.getElementById(deadBranches[d]).remove()
-								}
+							if (possibility && (possibility.className !== "block")) {
+								possibility.remove()
+							}
 						}
 
 					// add new branches
 						for (var n in newBranches) {
 							var branch = findBranch(tree, newBranches[n]) || null
-							var parent = branch.parent ? (document.getElementById(branch.parent) || null) : document.getElementById("root")
+							var parent = branch.parent ? (document.getElementById(branch.parent) || null) : document.getElementById("base")
 
-							// construct HTML
+							// construct word
 								var outer = document.createElement("div")
 									outer.className = "branch"
 									outer.id = branch.id
-								parent.append(outer)
+								parent.insertBefore(outer, parent.lastChild)
 
 								var inner = document.createElement("div")
-									inner.className = "branch-word"
+									inner.className = "word"
 									inner.innerText = branch.word
 								outer.append(inner)
 
+							// construct plus
+								var child = document.createElement("div")
+									child.className = "branch"
+								outer.prepend(child)
+
 								var button = document.createElement("button")
-									button.className = "branch-plus"
+									button.className = "plus"
 									button.innerText = "+"
 									button.addEventListener("click", submitBranch)
-								outer.append(button)
+								child.append(button)
 						}
 
 					// update tree
@@ -324,6 +331,9 @@
 					window.plus = null
 					document.getElementById("header-submission").removeAttribute("active")
 				}
+
+			// hide game
+				document.getElementById("game").removeAttribute("active")
 
 			// display play-again link
 				document.getElementById("header-again").setAttribute("active", true)
@@ -374,10 +384,10 @@
 			try {
 				// errors
 					if (!tree || typeof tree !== "object") {
-						console.log("invalid tree")
+						return null
 					}
 					else if (!id || !id.length) {
-						console.log("no branch id")
+						return null
 					}
 
 				// find the branch

@@ -41,18 +41,15 @@
 								[players, {success: true, message: "3...", start: request.game.start}, 0],
 								[players, {success: true, message: "2..."}, 1000],
 								[players, {success: true, message: "1..."}, 2000],
-								[players, {success: true, message: "this game is all about compound words"}, 3000],
-								[players, {success: true, message: "build new words by overlapping with old words"}, 7000],
-								[players, {success: true, message: "ex: [flashlight] connects to [lighthouse] - they share [light]"}, 11000],
-								[players, {success: true, message: "compete with other players by building trees of word connections"}, 16000],
-								[players, {success: true, message: "when 5 words are built on yours, it locks in"}, 21000],
-								[players, {success: true, message: "but you can't build on your own word - make it good so other people will!"}, 26000],
-								[players, {success: true, message: "words should have an overlapping syllable - by letters or by sound"}, 31000],
-								[players, {success: true, message: "complete the circle to end the game - what will the starting word be?"}, 36000],
-								[players, {success: true, message: "3..."}, 41000],
-								[players, {success: true, message: "2..."}, 42000],
-								[players, {success: true, message: "1..."}, 43000],
-								[players, {success: true, chain: request.game.chain, tree: request.game.tree}, 45000]
+								[players, {success: true, message: "build new words by overlapping with old words"}, 3000],
+								[players, {success: true, message: "overlap by sound or letters - ex: [flashlight] & [lighthouse]"}, 7000],
+								[players, {success: true, message: "when 3 words are built on yours, it locks in - for 3 points!"}, 11000],
+								[players, {success: true, message: "you can't build on your own word"}, 16000],
+								[players, {success: true, message: "complete the circle to end the game"}, 19000],
+								[players, {success: true, message: "3..."}, 22000],
+								[players, {success: true, message: "2..."}, 23000],
+								[players, {success: true, message: "1..."}, 24000],
+								[players, {success: true, message: "touch + to start!", chain: request.game.chain, tree: request.game.tree}, 25000]
 							])
 					}
 			}
@@ -84,7 +81,7 @@
 
 				// find parent
 					else {
-						var blocks  = request.game.chain.map(function (block) { return block.word })
+						var blocks  = request.game.chain.map(function (block) { return block.word }) || []
 						var siblings = []
 						var parent = findBranch(request.game.tree, request.post.parent)
 							for (var parameter in parent) {
@@ -103,7 +100,7 @@
 							else if (siblings.includes(request.post.word.toLowerCase())) {
 								callback([request.session.id], {success: false, message: "word already present on this branch"})
 							}
-							else if (blocks.includes(request.post.word.toLowerCase())) {
+							else if (blocks.includes(request.post.word.toLowerCase()) && (blocks[0] !== request.post.word.toLowerCase())) {
 								callback([request.session.id], {success: false, message: "word already part of the chain"})
 							}
 
@@ -122,13 +119,18 @@
 											parent.points++
 
 										// find next ancestor
-											if (parent.points < 5) {
+											if ((parent.points < 3) && parent.parent) {
 												parent = findBranch(request.game.tree, parent.parent) || null
 											}
 
 										// lock block in & test for game end
-											else {
+											else if (parent.points >= 3) {
 												end = lockBlock(request, parent) || false
+												parent = null
+											}
+
+										// no parent
+											else {
 												parent = null
 											}
 									}
@@ -289,9 +291,11 @@
 				// errors
 					if (!tree || typeof tree !== "object") {
 						main.logError("invalid tree")
+						return null
 					}
 					else if (!id || !id.length) {
 						main.logError("no branch id")
+						return null
 					}
 
 				// find the branch
@@ -380,7 +384,7 @@
 							pruneTree(request.game.tree, branch, true)
 
 						// end game ?
-							if (block.word == request.game.chain[0].word) {
+							if ((request.game.chain.length > 1) && (block.word == request.game.chain[0].word)) {
 								return true
 							}
 							else {
@@ -417,13 +421,14 @@
 					request.game.end = new Date().getTime()
 
 				// send messages
+					var players = Object.keys(request.game.players)
 					sendMessages(request, callback, [
 						[players, {success: true, message: "that completes the loop!"}, 0],
 						[players, {success: true, message: "the final scores?"}, 4000],
 						[players, {success: true, message: "3..."}, 7000],
 						[players, {success: true, message: "2..."}, 8000],
 						[players, {success: true, message: "1..."}, 9000],
-						[players, {success: true, end: request.game.end, players: request.game.players}, 10000]
+						[players, {success: true, end: request.game.end, players: main.sanitizeObject(request.game.players)}, 10000]
 					])
 
 			}

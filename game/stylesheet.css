@@ -40,6 +40,7 @@
 		width: calc(100vw - 20px);
 		height: 80px;
 		z-index: 2;
+		pointer-events: none;
 	}
 	
 	/* begin */
@@ -49,6 +50,7 @@
 			font-size: 125%;
 			padding: 10px;
 			z-index: 2;
+			pointer-events: all;
 		}
 
 		#header-begin:not([active]) {
@@ -65,6 +67,7 @@
 			background-color: #212121;
 			border-radius: 20px;
 			text-align: center;
+			pointer-events: all;
 		}
 
 		#header-submission:not([active]) {
@@ -104,6 +107,7 @@
 			width: 40px;
 			height: 40px;
 			border-radius: 20px;
+			outline: none;
 		}
 
 		#header-submission-close:hover, #header-submission-close:focus {
@@ -123,6 +127,7 @@
 			border-radius: 20px;
 			z-index: 2;
 			outline: none;
+			pointer-events: all;
 		}
 
 		#header-again:focus, #header-again:hover {
@@ -142,7 +147,7 @@
 		height: auto;
 		max-height: calc(100vh - 150px);
 		padding: 100px 0px 0px 0px;
-		overflow: scroll;
+		overflow-y: scroll;
 	}
 
 	#players:not([active]) {
@@ -189,86 +194,62 @@
 		height: auto;
 		max-height: calc(100vh - 150px);
 		padding: 100px 0px 0px 0px;
-		overflow: scroll;
+		overflow-y: scroll;
 	}
 
-	/* tree */
-		#tree {
-			
-		}
+	#game:not([active]) {
+		pointer-events: none;
+		display: none;
+	}
 
-		#root {
-			display: flex;
-			flex-direction: row;
-			width: 100vw;
-			height: auto;
-			text-align: center;
-			justify-content: center;
-		}
-
+	/* branch */
 		.branch {
-			justify-content: center;
-			display: flex;
-			flex-direction: row;
-			flex-wrap: wrap;
+			display: inline-block;
+			margin: 0px 5px 0px 5px;
+			max-width: calc(100vw - 10px);
 		}
 
-		.branch-word {
-			font-weight: normal;
-			font-size: 15px;
-			order: 100;
-			display: block;
-			flex: 0 0 100%;
-			margin-top: 20px;
-		}
-
-		.branch-word:after {
+		.branch:after {
 			display: block;
 			content: "|";
-			color: #212121;
+			color: #bbbbbb;
 		}
 
-		.branch-plus {
+		.branch > .word {
+			font-weight: normal;
+			font-size: 15px;
+			display: block;
+			background-color: #bbbbbb;
+			border-radius: 20px;
+			padding: 5px 10px 5px 10px;
+		}
+
+		.branch > .plus {
 			font-size: 15px;
 			border-radius: 100%;
 			height: 20px;
 			width: 20px;
 			padding: 0px;
 			border: 0px;
-			order: 1;
 		}
 
-	/* chain */
-		#chain {
+	/* block */
+		#base {
 
 		}
 
 		.block {
-			position: relative;
-			bottom: 0px;
-			padding: 20px 0px 20px 0px;
-			margin: 10px;
-			width: calc(100% - 20px);
+			width: 100vw;
 			height: auto;
-			font-size: 125%;
-			user-select: none;
-			-webkit-user-select: none;
-			-moz-user-select: none;
-			-ms-user-select: none;
-			-o-user-select: none;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			cursor: default;
+			text-align: center;
+		}
+
+		.block > .word {
+			display: block;
 			color: #dddddd;
 			border-radius: 20px;
-			text-align: center;
-			text-transform: uppercase;
-		}
-
-		.block-word {
-			margin-left: 10px;
-		}
-
-		.block-player {
-			margin-left: 10px;
+			padding: 10px 0px 10px 0px;
+			height: 40px;
+			width: calc(100vw - 20px);
+			margin: 10px;
 		}
