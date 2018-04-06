@@ -54,7 +54,7 @@
 					}
 			}
 			catch (error) {
-				main.logError(error)
+				main.logError(error + " unable to submit begin")
 				callback([request.session.id], {success: false, message: "unable to submit begin"})
 			}
 		}
@@ -147,7 +147,7 @@
 					}
 			}
 			catch (error) {
-				main.logError(error)
+				main.logError(error + " unble to submit word")
 				callback([request.session.id], {success: false, message: "unable to submit word"})
 			}
 		}
@@ -184,7 +184,7 @@
 				}
 			}
 			catch (error) {
-				main.logError(error)
+				main.logError(error + " unable to add player")
 				callback([request.session.id], {success: false, message: "unable to add player"})
 			}
 		}
@@ -225,7 +225,7 @@
 				}
 			}
 			catch (error) {
-				main.logError(error)
+				main.logError(error + " unable to remove player")
 				callback([request.session.id], {success: false, message: "unable to remove player"})
 			}
 		}
@@ -280,7 +280,7 @@
 					}
 			}
 			catch (error) {
-				main.logError(error)
+				main.logError(error + " unable to send messages")
 			}
 		}
 
@@ -290,11 +290,9 @@
 			try {
 				// errors
 					if (!tree || typeof tree !== "object") {
-						main.logError("invalid tree")
 						return null
 					}
 					else if (!id || !id.length) {
-						main.logError("no branch id")
 						return null
 					}
 
@@ -363,10 +361,10 @@
 			try {
 				// errors
 					if (!branch || typeof branch !== "object") {
-						main.logError("invalid branch")
+						return false
 					}
 					else if (request.game.chain.map(function (block) { return block.id }).includes(branch.id)) {
-						main.logError("already added")
+						return false
 					}
 
 				// lock it in
@@ -422,14 +420,16 @@
 
 				// send messages
 					var players = Object.keys(request.game.players)
-					sendMessages(request, callback, [
-						[players, {success: true, message: "that completes the loop!"}, 0],
-						[players, {success: true, message: "the final scores?"}, 4000],
-						[players, {success: true, message: "3..."}, 7000],
-						[players, {success: true, message: "2..."}, 8000],
-						[players, {success: true, message: "1..."}, 9000],
-						[players, {success: true, end: request.game.end, players: main.sanitizeObject(request.game.players)}, 10000]
-					])
+					setTimeout(function() {
+						sendMessages(request, callback, [
+							[players, {success: true, message: "that completes the loop!"}, 0],
+							[players, {success: true, message: "the final scores?"}, 4000],
+							[players, {success: true, message: "3..."}, 7000],
+							[players, {success: true, message: "2..."}, 8000],
+							[players, {success: true, message: "1..."}, 9000],
+							[players, {success: true, end: request.game.end, players: main.sanitizeObject(request.game.players)}, 10000]
+						])
+					}, 0)
 
 			}
 			catch (error) {

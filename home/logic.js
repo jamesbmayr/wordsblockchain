@@ -28,7 +28,7 @@
 				}
 			}
 			catch (error) {
-				main.logError(error)
+				main.logError(error + " unable to create game")
 				callback({success: false, message: "unable to create game"})
 			}
 		}
@@ -66,7 +66,7 @@
 					return player || {}
 			}
 			catch (error) {
-				main.logError(error)
+				main.logError(error + " unable to create player")
 				return false
 			}
 		}	
@@ -96,7 +96,7 @@
 				}
 			}
 			catch (error) {
-				main.logError(error)
+				main.logError(error + " unable to join game")
 				callback({success: false, message: "unable to join game"})
 			}
 		}

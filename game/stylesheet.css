@@ -41,25 +41,35 @@
 		height: 80px;
 		z-index: 2;
 		pointer-events: none;
+		text-transform: uppercase;
 	}
 	
 	/* begin */
 		#header-begin {
+			float: left;
 			width: calc(100vw - 20px);
 			height: 80px;
 			font-size: 125%;
 			padding: 10px;
 			z-index: 2;
 			pointer-events: all;
+			transition: 1s;
+			opacity: 1;
 		}
 
-		#header-begin:not([active]) {
+		#header-begin:not([visible]) {
 			pointer-events: none;
-			display: none;
+			opacity: 0;
+			height: 0px;
+			width: 0px;
+			margin: 0px;
+			padding: 0px;
+			border: 0px;
 		}
 
 	/* submission */
 		#header-submission {
+			float: left;
 			width: calc(100vw - 20px);
 			height: 80px;
 			font-size: 125%;
@@ -68,46 +78,65 @@
 			border-radius: 20px;
 			text-align: center;
 			pointer-events: all;
+			transition: 1s;
+			opacity: 1;
+			overflow: none;
 		}
 
-		#header-submission:not([active]) {
+		#header-submission:not([visible]) {
 			pointer-events: none;
-			display: none;
+			opacity: 0;
 		}
 
 		#header-submission-word {
 			float: left;
+			margin: 0px;
 			font-size: 100%;
 			height: 40px;
 			width: calc(100vw - 20px - 40px - 80px - 80px);
 			padding: 10px;
+			transition: 1s;
+		}
+
+		#header-submission:not([visible]) #header-submission-word {
+			pointer-events: none;
+			opacity: 0;
 		}
 
 		#header-submission-send {
 			float: left;
+			margin: 0px;
 			font-size: 100%;
 			height: 80px;
 			width: 80px;
 			color: #dddddd;
 			background-color: #212121;
 			border-radius: 20px;
+			transition: 1s;
 		}
 
 		#header-submission-send:hover, #header-submission-send:focus {
 			text-shadow: 0px 0px 20px #dddddd;
 		}
 
+		#header-submission:not([visible]) #header-submission-send {
+			pointer-events: none;
+			opacity: 0;
+		}
+
 		#header-submission-close {
 			float: left;
+			margin: 0px;
 			font-size: 100%;
-			padding: 20px;
+			padding: 20px 25px 20px 25px;
 			color: #dddddd;
-			background-color: #212121;
+			background-color: transparent;
 			cursor: pointer;
-			width: 40px;
+			width: 30px;
 			height: 40px;
 			border-radius: 20px;
 			outline: none;
+			transition: 1s;
 		}
 
 		#header-submission-close:hover, #header-submission-close:focus {
@@ -115,9 +144,14 @@
 			box-shadow: 0px 0px 50px #212121;
 		}
 
+		#header-submission:not([visible]) #header-submission-close {
+			pointer-events: none;
+			opacity: 0;
+		}
+
 	/* again */
 		#header-again {
-			display: block;
+			float: right;
 			width: calc(100vw - 20px);
 			height: 40px;
 			font-size: 125%;
@@ -128,15 +162,22 @@
 			z-index: 2;
 			outline: none;
 			pointer-events: all;
+			opacity: 1;
+			transition: 1s;
 		}
 
 		#header-again:focus, #header-again:hover {
 			box-shadow: 0px 0px 50px #212121;
 		}
 
-		#header-again:not([active]) {
+		#header-again:not([visible]) {
 			pointer-events: none;
-			display: none;
+			opacity: 0;
+			height: 0px;
+			width: 0px;
+			margin: 0px;
+			padding: 0px;
+			border: 0px;
 		}
 
 /*** players ***/
@@ -148,11 +189,18 @@
 		max-height: calc(100vh - 150px);
 		padding: 100px 0px 0px 0px;
 		overflow-y: scroll;
+		text-transform: uppercase;
+		transition: 1s;
+		opacity: 1;
 	}
 
-	#players:not([active]) {
+	#players:not([visible]) {
 		pointer-events: none;
-		display: none;
+		opacity: 0;
+		height: 0px;
+		width: 0px;
+		margin: 0px;
+		padding: 0px;
 	}
 
 	/* player */
@@ -176,14 +224,29 @@
 			border-radius: 20px;
 			text-align: center;
 			text-transform: uppercase;
+			opacity: 1;
+			transition: 1s;
+		}
+
+		.player:not([visible]) {
+			pointer-events: none;
+			opacity: 0;
+			height: 0px;
+			width: 0px;
+			margin: 0px;
+			padding: 0px;
 		}
 
 		.player-name {
 			margin-left: 10px;
 		}
 
-		.player-score {
+		.player-score:not(:empty) {
 			margin-left: 10px;
+			background-color: #dddddd;
+			border-radius: 20px;
+			padding: 10px;
+			font-weight: normal;
 		}
 
 /*** game ***/
@@ -195,11 +258,18 @@
 		max-height: calc(100vh - 150px);
 		padding: 100px 0px 0px 0px;
 		overflow-y: scroll;
+		text-transform: uppercase;
+		transition: 1s;
+		opacity: 1;
 	}
 
-	#game:not([active]) {
+	#game:not([visible]) {
 		pointer-events: none;
-		display: none;
+		opacity: 0;
+		height: 0px;
+		width: 0px;
+		margin: 0px;
+		padding: 0px;
 	}
 
 	/* branch */
@@ -207,6 +277,18 @@
 			display: inline-block;
 			margin: 0px 5px 0px 5px;
 			max-width: calc(100vw - 10px);
+			opacity: 1;
+			transition: 1s;
+			transform: rotate(0deg);
+		}
+
+		.branch:not([visible]) {
+			pointer-events: none;
+			opacity: 0;
+			height: 0px;
+			width: 0px;
+			margin: 0px;
+			padding: 0px;
 		}
 
 		.branch:after {
@@ -222,6 +304,8 @@
 			background-color: #bbbbbb;
 			border-radius: 20px;
 			padding: 5px 10px 5px 10px;
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 
 		.branch > .plus {
@@ -231,17 +315,33 @@
 			width: 20px;
 			padding: 0px;
 			border: 0px;
+			transition: 1s;
+		}
+
+		.plus[active] {
+			background-color: #dddddd;
+			color: #212121;
+			transform: rotate(225deg);
+			box-shadow: 0px 0px 20px #212121;
 		}
 
 	/* block */
-		#base {
-
-		}
-
 		.block {
 			width: 100vw;
 			height: auto;
 			text-align: center;
+			opacity: 1;
+			transition: 1s;
+			transform: rotate(360deg);
+		}
+
+		.block:not([visible]) {
+			pointer-events: none;
+			opacity: 0;
+			height: 0px;
+			width: 0px;
+			margin: 0px;
+			padding: 0px;
 		}
 
 		.block > .word {
@@ -252,4 +352,6 @@
 			height: 40px;
 			width: calc(100vw - 20px);
 			margin: 10px;
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}

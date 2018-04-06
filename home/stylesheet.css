@@ -89,7 +89,6 @@
 			width: calc(100% - 40px);
 			padding: 10px;
 			text-align: center;
-			line-height: 1;
 			font-size: 100%;
 		}
 
@@ -98,19 +97,8 @@
 			width: calc(60% - 50px);
 			padding: 10px;
 			text-align: center;
-			line-height: 1;
 			font-size: 100%;
 			margin-right: 10px;
-		}
-
-		@-moz-document url-prefix() {
-			#createName, #gameCode {
-				padding: 12px 10px 12px 10px;
-			}
-
-			#joinGame {
-				border-radius: 20px;
-			}
 		}
 
 	/* buttons */
@@ -131,5 +119,5 @@
 			text-align: center;
 			line-height: 1;
 			font-size: 100%;
-			padding: 11px 4px 12px 4px;
+			padding: 13px 4px 13px 4px;
 		}

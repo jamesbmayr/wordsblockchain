@@ -73,7 +73,6 @@
 		.invisible {
 			opacity: 0;
 			pointer-events: none;
-			transition: 2s;
 		}
 
 	/* sections */
@@ -147,7 +146,6 @@
 			text-align: center;
 			color: #777777;
 			text-transform: uppercase;
-			padding: 10px;
 		}
 
 		::-moz-placeholder {
@@ -155,7 +153,7 @@
 			font-family: 'Bungee', Helvetica, sans-serif;
 			text-align: center;
 			color: #777777;
-			text-transform: uppercase;  
+			text-transform: uppercase;
 		}
 
 		::-o-input-placeholder {
@@ -180,12 +178,24 @@
 			color: #ff6b69;
 		}
 
+		.browntext, a.browntext {
+			color: #a17c6f;
+		}
+
 		.orangetext, a.orangetext {
 			color: #d89258;
 		}
 
+		.yellowtext, a.yellowtext {
+			color: #dcc60e;
+		}
+
 		.greentext, a.greentext {
 			color: #67b873;
+		}
+
+		.cyantext, a.cyantext {
+			color: #4fc5d4;
 		}
 
 		.bluetext, a.bluetext {
@@ -194,6 +204,14 @@
 
 		.purpletext, a.purpletext {
 			color: #9367b5;
+		}
+
+		.magentatext, a.magentatext {
+			color: #ed7ba2;
+		}
+
+		.graytext, a.graytext {
+			color: #8fb7ca;
 		}
 
 	/* background color */

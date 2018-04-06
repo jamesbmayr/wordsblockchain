@@ -26,18 +26,18 @@
 
 			// begin button & players
 				if (!window.game.start) {
-					document.getElementById("header-begin").setAttribute("active", true)
+					document.getElementById("header-begin").setAttribute("visible", true)
 					document.getElementById("header-begin").addEventListener("click", submitBegin)
-					document.getElementById("players").setAttribute("active", true)
+					document.getElementById("players").setAttribute("visible", true)
 
-					buildPlayers(window.game.players)
+					buildPlayers(window.game.players, true)
 				}
 
 			// build page
 				else {
 					document.getElementById("header-submission").addEventListener("submit", submitWord)
 					document.getElementById("header-submission-close").addEventListener("click", submitClose)
-					document.getElementById("game").setAttribute("active", true)
+					document.getElementById("game").setAttribute("visible", true)
 					buildChain(window.game.chain, true)
 					buildTree( window.game.tree,  true)
 				}
@@ -69,9 +69,7 @@
 
 			// unselect
 				else if (window.plus && (window.plus.parentNode.parentNode.id == event.target.parentNode.parentNode.id)) {
-					window.plus.removeAttribute("active")
-					window.plus = null
-					document.getElementById("header-submission").removeAttribute("active")
+					submitClose()
 				}
 
 			// select
@@ -82,17 +80,21 @@
 
 					window.plus = event.target
 					window.plus.setAttribute("active", true)
-					document.getElementById("header-submission").setAttribute("active", true)
-					document.getElementById("header-submission").focus()
+					document.getElementById("header-submission").setAttribute("visible", true)
+					document.getElementById("header-submission-word").focus()
 				}
 		}
 
 	/* submitClose */
 		function submitClose(event) {
 			// unselect
-				window.plus.removeAttribute("active")
+				if (window.plus) {
+					window.plus.removeAttribute("active")
+				}
 				window.plus = null
-				document.getElementById("header-submission").removeAttribute("active")
+
+			// hide submission
+				document.getElementById("header-submission").removeAttribute("visible")
 				document.getElementById("header-submission-word").value = ""
 		}
 
@@ -102,7 +104,7 @@
 				if (window.game.end) {
 					displayError("Game already ended...")
 				}
-				else if (!window.plus || !document.getElementById("header-submission").getAttribute("active")) {
+				else if (!window.plus || !document.getElementById("header-submission").getAttribute("visible")) {
 					displayError("No active branch...")
 				}
 				else if (!(/^[a-zA-Z\s]+$/).test(document.getElementById("header-submission-word").value)) {
@@ -120,10 +122,7 @@
 						socket.send(JSON.stringify(post))
 
 					// unselect
-						window.plus.removeAttribute("active")
-						window.plus = null
-						document.getElementById("header-submission").removeAttribute("active")
-						document.getElementById("header-submission-word").value = ""
+						submitClose()
 				}
 		}
 
@@ -142,10 +141,10 @@
 
 			// start
 				if (post.start !== undefined) {
-					document.getElementById("header-begin").removeAttribute("active")
+					document.getElementById("header-begin").removeAttribute("visible")
 					document.getElementById("header-submission").addEventListener("submit", submitWord)
-					document.getElementById("players").removeAttribute("active")
-					document.getElementById("game").setAttribute("active", true)
+					document.getElementById("players").removeAttribute("visible")
+					document.getElementById("game").setAttribute("visible", true)
 				}
 
 			// message
@@ -173,26 +172,38 @@
 	/* buildPlayer */
 		function buildPlayer(player) {
 			// construct HTML
+				var container = document.getElementById("players")
 				var outer = document.createElement("div")
 					outer.className = "player"
 					outer.id = player.id
 					outer.setAttribute("color", player.color)
-				document.getElementById("players").prepend(outer)
+					fadeElement(outer)
+				if (container.firstChild) {
+					container.insertBefore(outer, container.firstChild)
+				}
+				else {
+					container.appendChild(outer)
+				}
 
 				var inner = document.createElement("span")
 					inner.className = "player-name"
 					inner.innerText = player.name
-				outer.append(inner)
+				outer.appendChild(inner)
 
 				var inner = document.createElement("span")
-					inner.className = "player-score"
+					inner.className = "player-score " + player.color + "text"
 					inner.innerText = player.points || ""
-				outer.append(inner)
+				outer.appendChild(inner)
 		}
 
 	/* buildPlayers */
-		function buildPlayers(players) {
+		function buildPlayers(players, reset) {
 			window.game.players = players || {}
+
+			// reset?
+				if (reset) {
+					document.getElementById("players").innerHTML = ""
+				}
 				
 			// add new
 				for (var p in window.game.players) {
@@ -205,7 +216,7 @@
 				var playerElements = Array.from(document.querySelectorAll(".player"))
 				for (var p in playerElements) {
 					if (!window.game.players[playerElements[p].id]) {
-						playerElements[p].remove()
+						fadeElement(playerElements[p], true)
 					}
 				}
 		}
@@ -233,8 +244,8 @@
 
 							// already exists
 								if (possibility) {
+									fadeElement(possibility.firstChild, true)
 									possibility.className = "block"
-									possibility.firstChild.remove()
 									possibility.lastChild.setAttribute("color", block.color)
 								}
 
@@ -245,13 +256,15 @@
 									var outer = document.createElement("div")
 										outer.className = "block"
 										outer.id = block.id
+										if (reset) { outer.setAttribute("visible", true) }
+										else { fadeElement(outer) }
 									document.getElementById("game").insertBefore(outer, topBlock)
 
 									var inner = document.createElement("div")
 										inner.className = "word"
 										inner.innerText = block.word
 										inner.setAttribute("color", block.color)
-									outer.append(inner)
+									outer.appendChild(inner)
 								}							
 						}
 
@@ -287,6 +300,11 @@
 
 							if (possibility && (possibility.className !== "block")) {
 								possibility.remove()
+
+								// if plus has no parent, grandparent, or great-grandparent, close submission
+									if (!window.plus || !window.plus.parentNode || !window.plus.parentNode.parentNode || !window.plus.parentNode.parentNode.parentNode) {
+										submitClose()
+									}
 							}
 						}
 
@@ -299,23 +317,26 @@
 								var outer = document.createElement("div")
 									outer.className = "branch"
 									outer.id = branch.id
+									if (reset) { outer.setAttribute("visible", true) }
+									else { fadeElement(outer) }
 								parent.insertBefore(outer, parent.lastChild)
 
 								var inner = document.createElement("div")
 									inner.className = "word"
 									inner.innerText = branch.word
-								outer.append(inner)
+								outer.appendChild(inner)
 
 							// construct plus
 								var child = document.createElement("div")
 									child.className = "branch"
-								outer.prepend(child)
+									child.setAttribute("visible", true)
+								outer.insertBefore(child, outer.firstChild)
 
 								var button = document.createElement("button")
 									button.className = "plus"
 									button.innerText = "+"
 									button.addEventListener("click", submitBranch)
-								child.append(button)
+								child.appendChild(button)
 						}
 
 					// update tree
@@ -326,27 +347,18 @@
 	/* buildEnd */
 		function buildEnd(players) {
 			// hide submission
-				if (window.plus) {
-					window.plus.removeAttribute("active")
-					window.plus = null
-					document.getElementById("header-submission").removeAttribute("active")
-				}
+				submitClose()
 
 			// hide game
-				document.getElementById("game").removeAttribute("active")
+				document.getElementById("game").removeAttribute("visible")
 
 			// display play-again link
-				document.getElementById("header-again").setAttribute("active", true)
+				document.getElementById("header-again").setAttribute("visible", true)
 				document.getElementById("header-again").focus()
 
 			// display players
-				document.getElementById("players").setAttribute("active", true).innerHTML = ""
-				buildPlayers(players)
-
-			// disconnect socket
-				if (socket) {
-					socket.close()
-				}
+				document.getElementById("players").setAttribute("visible", true)
+				buildPlayers(players, true)
 		}
 
 /*** helpers ***/
@@ -414,6 +426,35 @@
 
 						// return branch, if found
 							return branch || null
+					}
+			}
+			catch (error) {
+				console.log(error)
+			}
+		}
+
+	/* fadeElement */
+		function fadeElement(element, out) {
+			try {
+				// errors
+					if (!element) {
+						return null
+					}
+
+				// out
+					else if (out) {
+						element.removeAttribute("visible")
+
+						setTimeout(function() {
+							element.remove()
+						}, 1000)
+					}
+
+				// in
+					else {
+						setTimeout(function() {
+							element.setAttribute("visible", true)
+						}, 0)
 					}
 			}
 			catch (error) {
