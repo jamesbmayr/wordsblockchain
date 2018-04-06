@@ -44,7 +44,7 @@
 								[players, {success: true, message: "build new words by overlapping with old words"}, 3000],
 								[players, {success: true, message: "overlap by sound or letters - ex: [flashlight] & [lighthouse]"}, 7000],
 								[players, {success: true, message: "when 3 words are built on yours, it locks in - for 3 points!"}, 11000],
-								[players, {success: true, message: "you can't build on your own word"}, 16000],
+								[players, {success: true, message: "you can't build on your own words"}, 16000],
 								[players, {success: true, message: "complete the circle to end the game"}, 19000],
 								[players, {success: true, message: "3..."}, 22000],
 								[players, {success: true, message: "2..."}, 23000],
@@ -408,7 +408,7 @@
 					else {
 						while (Object.keys(request.game.tree).length) {
 							for (var t in request.game.tree) {
-								request.game.players[request.game.tree[t].player].points += request.game.tree[t].points
+								request.game.players[request.game.tree[t].player].points += (1 + request.game.tree[t].points)
 
 								pruneTree(request.game.tree, request.game.tree[t], false)
 							}
