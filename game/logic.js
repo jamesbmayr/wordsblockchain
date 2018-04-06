@@ -72,8 +72,8 @@
 					else if (!request.post.word || !request.post.word.length) {
 						callback([request.session.id], {success: false, message: "no word submitted"})
 					}
-					else if (!(/^[a-zA-Z]+$/).test(request.post.word)) {
-						callback([request.session.id], {success: false, message: "letters only"})	
+					else if (!main.isNumLet(request.post.word)) {
+						callback([request.session.id], {success: false, message: "letters, numbers, and spaces only"})	
 					}
 					else if (!request.post.parent || (request.post.parent.length !== 8) || !main.isNumLet(request.post.parent)) {
 						callback([request.session.id], {success: false, message: "invalid parent"})
@@ -81,12 +81,13 @@
 
 				// find parent
 					else {
-						var blocks  = request.game.chain.map(function (block) { return block.word }) || []
+						var baseWord = request.post.word.toLowerCase().replace(/[^a-z0-9]/gi, "")
+						var blocks = request.game.chain.map(function (block) { return block.word.toLowerCase().replace(/[^a-z0-9]/gi, "") }) || []
 						var siblings = []
 						var parent = findBranch(request.game.tree, request.post.parent)
 							for (var parameter in parent) {
 								if (typeof parent[parameter] == "object") {
-									siblings.push(parent[parameter].word)
+									siblings.push(parent[parameter].word.replace(/[^a-z0-9]/gi, ""))
 								}
 							}
 
@@ -97,10 +98,10 @@
 							else if ((parent.player == request.session.id) && (Object.keys(request.game.players).length > 2)) {
 								callback([request.session.id], {success: false, message: "cannot build on your own word"})
 							}
-							else if (siblings.includes(request.post.word.toLowerCase())) {
+							else if (siblings.includes(baseWord)) {
 								callback([request.session.id], {success: false, message: "word already present on this branch"})
 							}
-							else if (blocks.includes(request.post.word.toLowerCase()) && (blocks[0] !== request.post.word.toLowerCase())) {
+							else if (blocks.includes(baseWord) && (blocks[0].replace(/[^a-z0-9]/gi, "") !== baseWord)) {
 								callback([request.session.id], {success: false, message: "word already part of the chain"})
 							}
 
@@ -237,7 +238,7 @@
 			try {
 				var branch = {
 					id:     main.generateRandom(null, 8),
-					word:   request.post.word.toLowerCase(),
+					word:   request.post.word.toLowerCase().replace(/[^a-z0-9_\s]/gi, "").trim(),
 					player: request.session.id,
 					points: 0
 				}
@@ -382,7 +383,7 @@
 							pruneTree(request.game.tree, branch, true)
 
 						// end game ?
-							if ((request.game.chain.length > 1) && (block.word == request.game.chain[0].word)) {
+							if ((request.game.chain.length > 1) && (block.word.toLowerCase().replace(/[^a-z0-9]/gi, "") == request.game.chain[0].word.toLowerCase().replace(/[^a-z0-9]/gi, ""))) {
 								return true
 							}
 							else {

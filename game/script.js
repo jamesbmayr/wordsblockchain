@@ -107,8 +107,8 @@
 				else if (!window.plus || !document.getElementById("header-submission").getAttribute("visible")) {
 					displayError("No active branch...")
 				}
-				else if (!(/^[a-zA-Z\s]+$/).test(document.getElementById("header-submission-word").value)) {
-					displayError("Letters only...")
+				else if (!(/^[a-zA-Z0-9_\s]+$/).test(document.getElementById("header-submission-word").value)) {
+					displayError("Letters, numbers, and spaces only...")
 				}
 
 			// submit
