@@ -78,9 +78,9 @@
 	/* sections */
 		#error {
 			position: fixed;
-			top: 2%;
+			top: 50%;
 			left: 50%;
-			transform: translateX(-50%);
+			transform: translateY(-50%) translateX(-50%);
 			width: 80vw;
 			z-index: 5;
 			padding: 10px;
