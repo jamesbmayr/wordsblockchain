@@ -113,7 +113,7 @@
 							else if (siblings.includes(baseWord)) {
 								callback([request.session.id], {success: false, message: "word already present on this branch"})
 							}
-							else if (blocks.includes(baseWord) && (blocks[0].replace(/[^a-z0-9]/gi, "") !== baseWord)) {
+							else if (blocks.includes(baseWord)) {
 								callback([request.session.id], {success: false, message: "word already part of the chain"})
 							}
 
