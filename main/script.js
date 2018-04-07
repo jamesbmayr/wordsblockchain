@@ -28,11 +28,7 @@
 				else {
 					return options[Math.floor(Math.random() * options.length)]
 				}
-			}
-			catch (error) {
-				logError(error)
-				return false
-			}
+			} catch (error) {}
 		}
 
 /*** displays ***/
@@ -89,166 +85,167 @@
 
 	/* animateWords */
 		function animateWords() {
-			window.requestAnimationFrame(function() {
-				// get words
-					var words = Array.prototype.slice.call( document.getElementsByClassName("word") )
-					var wordZone = document.getElementById("wordzone")
-					var wordCount = words.length
+			try {
+				window.requestAnimationFrame(function() {
+					// get words
+						var words = Array.prototype.slice.call( document.getElementsByClassName("word") )
+						var wordZone = document.getElementById("wordzone")
+						var wordCount = words.length
 
-				// reduce wordWait
-					if (wordWait) {
-						wordWait--
-					}
-					else {
-						wordWait = 5
-					}
+					// reduce wordWait
+						if (wordWait) {
+							wordWait--
+						}
+						else {
+							wordWait = 5
+						}
 
-				// create words
-					if (!wordWait && (wordCount < wordMax) && wordContinue) {
-						// loops
-							wordCount++
-							wordContinue++
+					// create words
+						if (!wordWait && (wordCount < wordMax) && wordContinue) {
+							// loops
+								wordCount++
+								wordContinue++
 
-						// create element
-							var direction = ["left", "right", "up", "down"][Math.floor(Math.random() * 4)]
-							var word = document.createElement("div")
-								word.className = "word"
-								word.setAttribute("speed", Math.round(Math.random() * 5) + 10)
-								word.setAttribute("direction", direction)
+							// create element
+								var direction = ["left", "right", "up", "down"][Math.floor(Math.random() * 4)]
+								var word = document.createElement("div")
+									word.className = "word"
+									word.setAttribute("speed", Math.round(Math.random() * 5) + 10)
+									word.setAttribute("direction", direction)
 
-						// text
-							if (window.examples) {
-								word.innerText = chooseRandom(window.examples)
-							}
-							else {
-								word.innerText = "error"
-							}
+							// text
+								if (window.examples) {
+									word.innerText = chooseRandom(window.examples)
+								}
+								else {
+									word.innerText = "error"
+								}
 
-						// place by direction
-							if (direction == "up") {
-								word.style.left = Math.round(Math.random() * (window.innerWidth - 300)) + 50 + "px"
-								word.style.top = window.innerHeight + 100 + "px"
-							}
-							else if (direction == "down") {
-								word.style.left = Math.round(Math.random() * (window.innerWidth - 300)) + 50 + "px"
-								word.style.top = -400 + "px"
-							}
-							else if (direction == "left") {
-								word.style.left = window.innerWidth + 300 + "px"
-								word.style.top = Math.round(Math.random() * (window.innerHeight - 100)) + 50 + "px"
-							}
-							else if (direction == "right") {
-								word.style.left = -400 + "px"
-								word.style.top = Math.round(Math.random() * (window.innerHeight - 100)) + 50 + "px"
-							}
-
-						wordZone.appendChild(word)
-					}
-
-				// end ?
-					if (!wordContinue && !wordCount) {
-						clearInterval(wordLoop)
-					}
-
-				// move words
-					else {
-						for (var w in words) {
-							// get data
-								var direction = words[w].getAttribute("direction") || "up"
-								var speed     = Number(words[w].getAttribute("speed")) || 10
-								var top       = Number(words[w].style.top.replace("px", "")) || 0
-								var left      = Number(words[w].style.left.replace("px", "")) || 0
-
-							// move by direction
+							// place by direction
 								if (direction == "up") {
-									if (top - speed < -100) {
-										wordZone.removeChild(words[w])
-									}
-									else {
-										words[w].style.top = top - speed + "px"
-									}
+									word.style.left = Math.round(Math.random() * (window.innerWidth - 300)) + 50 + "px"
+									word.style.top = window.innerHeight + 100 + "px"
 								}
 								else if (direction == "down") {
-									if (top + speed > window.innerHeight + 100) {
-										wordZone.removeChild(words[w])
-									}
-									else {
-										words[w].style.top = top + speed + "px"
-									}
+									word.style.left = Math.round(Math.random() * (window.innerWidth - 300)) + 50 + "px"
+									word.style.top = -400 + "px"
 								}
 								else if (direction == "left") {
-									if (left - speed < -400) {
-										wordZone.removeChild(words[w])
-									}
-									else {
-										words[w].style.left = left - speed + "px"
-									}
+									word.style.left = window.innerWidth + 300 + "px"
+									word.style.top = Math.round(Math.random() * (window.innerHeight - 100)) + 50 + "px"
 								}
 								else if (direction == "right") {
-									if (left + speed > window.innerWidth + 400) {
-										wordZone.removeChild(words[w])
-									}
-									else {
-										words[w].style.left = left + speed + "px"
-									}
+									word.style.left = -400 + "px"
+									word.style.top = Math.round(Math.random() * (window.innerHeight - 100)) + 50 + "px"
 								}
 
-							// safari hack
-								words[w].style.display = "none"
-								words[w].offsetHeight
-								words[w].style.display = "block"
+							wordZone.appendChild(word)
 						}
-					}
 
+					// end ?
+						if (!wordContinue && !wordCount) {
+							clearInterval(wordLoop)
+						}
 
-			})
+					// move words
+						else {
+							for (var w in words) {
+								// get data
+									var direction = words[w].getAttribute("direction") || "up"
+									var speed     = Number(words[w].getAttribute("speed")) || 10
+									var top       = Number(words[w].style.top.replace("px", "")) || 0
+									var left      = Number(words[w].style.left.replace("px", "")) || 0
+
+								// move by direction
+									if (direction == "up") {
+										if (top - speed < -100) {
+											wordZone.removeChild(words[w])
+										}
+										else {
+											words[w].style.top = top - speed + "px"
+										}
+									}
+									else if (direction == "down") {
+										if (top + speed > window.innerHeight + 100) {
+											wordZone.removeChild(words[w])
+										}
+										else {
+											words[w].style.top = top + speed + "px"
+										}
+									}
+									else if (direction == "left") {
+										if (left - speed < -400) {
+											wordZone.removeChild(words[w])
+										}
+										else {
+											words[w].style.left = left - speed + "px"
+										}
+									}
+									else if (direction == "right") {
+										if (left + speed > window.innerWidth + 400) {
+											wordZone.removeChild(words[w])
+										}
+										else {
+											words[w].style.left = left + speed + "px"
+										}
+									}
+
+								// safari hack
+									words[w].style.display = "none"
+									words[w].offsetHeight
+									words[w].style.display = "block"
+							}
+						}
+				})
+			} catch (error) {}
 		}
 
 /*** connections ***/
 	/* sendPost */
 		function sendPost(post, callback) {
-			var request = new XMLHttpRequest()
-				request.open("POST", location.pathname, true)
-				request.onload = function() {
-					if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-						callback(JSON.parse(request.responseText) || {success: false, message: "unknown error"})
+			try {
+				var request = new XMLHttpRequest()
+					request.open("POST", location.pathname, true)
+					request.onload = function() {
+						if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+							callback(JSON.parse(request.responseText) || {success: false, message: "unknown error"})
+						}
+						else {
+							callback({success: false, readyState: request.readyState, message: request.status})
+						}
 					}
-					else {
-						callback({success: false, readyState: request.readyState, message: request.status})
-					}
-				}
-				request.send(JSON.stringify(post))
+					request.send(JSON.stringify(post))
+			} catch (error) {}
 		}
 		
 	/* socket */
 		function createSocket() {
-			socket = new WebSocket(location.href.replace("http","ws"))
+			try {
+				socket = new WebSocket(location.href.replace("http","ws"))
 
-			// open
-				socket.onopen = function() {
-					socket.send(null)
-				}
-
-			// error
-				socket.onerror = function(error) {
-					console.log(error)
-				}
-
-			// close
-				socket.onclose = function() {
-					socket = null
-				}
-
-			// message
-				socket.onmessage = function(message) {
-					try {
-						var post = JSON.parse(message.data)
-						if (post && (typeof post == "object")) {
-							receivePost(post)
-						}
+				// open
+					socket.onopen = function() {
+						socket.send(null)
 					}
-					catch (error) {
+
+				// error
+					socket.onerror = function(error) {
 						console.log(error)
 					}
-				}
+
+				// close
+					socket.onclose = function() {
+						socket = null
+					}
+
+				// message
+					socket.onmessage = function(message) {
+						try {
+							var post = JSON.parse(message.data)
+							if (post && (typeof post == "object")) {
+								receivePost(post)
+							}
+						} catch (error) {}
+					}
+			} catch (error) {}
 		}
