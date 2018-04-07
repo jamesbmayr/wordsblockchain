@@ -41,16 +41,28 @@
 								[players, {success: true, message: "3...", start: request.game.start}, 0],
 								[players, {success: true, message: "2..."}, 1000],
 								[players, {success: true, message: "1..."}, 2000],
-								[players, {success: true, message: "build new words by overlapping with old words"}, 3000],
+								[players, {success: true, message: "build new words/phrases by overlapping with old ones"}, 3000],
 								[players, {success: true, message: "overlap by sound or letters - ex: [flashlight] & [lighthouse]"}, 7000],
-								[players, {success: true, message: "when 3 words are built on yours, it locks in - for 3 points!"}, 11000],
-								[players, {success: true, message: "you can't build on your own words"}, 16000],
-								[players, {success: true, message: "complete the circle to end the game"}, 19000],
+								[players, {success: true, message: "when 3 branches are built on yours, it locks in as a block"}, 11000],
+								(players.length == 2 ? [players, {success: true, message: "you can even build on your own words"}, 16000] : [players, {success: true, message: "you cannot build on your own words"}, 16000]),
+								[players, {success: true, message: "in 5 minutes, the player with the most blocks wins"}, 19000],
 								[players, {success: true, message: "3..."}, 22000],
 								[players, {success: true, message: "2..."}, 23000],
 								[players, {success: true, message: "1..."}, 24000],
 								[players, {success: true, message: "touch + to start!", chain: request.game.chain, tree: request.game.tree}, 25000]
 							])
+
+						// end game
+							sendMessages(request, callback, [
+								[players, {success: true, message: "30 seconds..."}, 270000],
+								[players, {success: true, message: "3..."}, 297000],
+								[players, {success: true, message: "2..."}, 298000],
+								[players, {success: true, message: "1..."}, 299000]
+							])
+
+							setTimeout(function() {
+								endGame(request, callback)
+							}, 300000)
 					}
 			}
 			catch (error) {
@@ -93,7 +105,7 @@
 
 						// more errors
 							if (!parent || typeof parent !== "object") {
-								callback([request.session.id], {success: false, message: "parent not found"})
+								callback([request.session.id], {success: false, message: "no branch found"})
 							}
 							else if ((parent.player == request.session.id) && (Object.keys(request.game.players).length > 2)) {
 								callback([request.session.id], {success: false, message: "cannot build on your own word"})
@@ -126,7 +138,7 @@
 
 										// lock block in & test for game end
 											else if (parent.points >= 3) {
-												end = lockBlock(request, parent) || false
+												lockBlock(request, parent)
 												parent = null
 											}
 
@@ -139,11 +151,6 @@
 								// send results
 									var players = Object.keys(request.game.players)
 									callback(players, {success: true, chain: request.game.chain, tree: request.game.tree})
-
-								// end game ?
-									if (end) {
-										endGame(request, callback)
-									}
 							}
 					}
 			}
@@ -152,7 +159,6 @@
 				callback([request.session.id], {success: false, message: "unable to submit word"})
 			}
 		}
-
 
 /*** players ***/
 	/* addPlayer */
@@ -376,19 +382,11 @@
 
 						// update points
 							if (block.player) {
-								request.game.players[block.player].points += block.points
+								request.game.players[block.player].points++
 							}
 
 						// prune tree
 							pruneTree(request.game.tree, branch, true)
-
-						// end game ?
-							if ((request.game.chain.length > 1) && (block.word.toLowerCase().replace(/[^a-z0-9]/gi, "") == request.game.chain[0].word.toLowerCase().replace(/[^a-z0-9]/gi, ""))) {
-								return true
-							}
-							else {
-								return false
-							}
 					}
 			}
 			catch (error) {
@@ -405,33 +403,23 @@
 						callback([request.session.id], {success: false, message: "game not in play"})
 					}
 
-				// award points
+				// end
 					else {
-						while (Object.keys(request.game.tree).length) {
-							for (var t in request.game.tree) {
-								request.game.players[request.game.tree[t].player].points += (1 + request.game.tree[t].points)
+						// set end
+							request.game.end = new Date().getTime()
 
-								pruneTree(request.game.tree, request.game.tree[t], false)
-							}
-						}
+						// send messages
+							var players = Object.keys(request.game.players)
+							setTimeout(function() {
+								sendMessages(request, callback, [
+									[players, {success: true, message: "the final scores?"}, 0],
+									[players, {success: true, message: "3..."}, 2000],
+									[players, {success: true, message: "2..."}, 3000],
+									[players, {success: true, message: "1..."}, 4000],
+									[players, {success: true, end: request.game.end, players: main.sanitizeObject(request.game.players)}, 5000]
+								])
+							}, 0)
 					}
-
-				// set end
-					request.game.end = new Date().getTime()
-
-				// send messages
-					var players = Object.keys(request.game.players)
-					setTimeout(function() {
-						sendMessages(request, callback, [
-							[players, {success: true, message: "that completes the loop!"}, 0],
-							[players, {success: true, message: "the final scores?"}, 4000],
-							[players, {success: true, message: "3..."}, 7000],
-							[players, {success: true, message: "2..."}, 8000],
-							[players, {success: true, message: "1..."}, 9000],
-							[players, {success: true, end: request.game.end, players: main.sanitizeObject(request.game.players)}, 10000]
-						])
-					}, 0)
-
 			}
 			catch (error) {
 				main.logError(error + " unable to end game")
