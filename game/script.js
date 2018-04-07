@@ -153,6 +153,7 @@
 					if (post.start !== undefined) {
 						document.getElementById("header-begin").removeAttribute("visible")
 						document.getElementById("header-submission").addEventListener("submit", submitWord)
+						document.getElementById("header-submission-close").addEventListener("click", submitClose)
 						document.getElementById("players").removeAttribute("visible")
 						document.getElementById("game").setAttribute("visible", true)
 					}
