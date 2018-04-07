@@ -50,19 +50,19 @@ a fast-paced party game of linking words in a blockchain: http://www.wordsblockc
 
 • When 3 words are built on yours, your word locks in as a block in the chain.
 
-• The game ends when a player completes the circle - locking in the word that started the chain.
-
-• All remaining words on the tree earn points too. The player with the most points wins!
+• The game ends after 5 minutes - the player with the most locked-in words wins!
 
 
 
 ## Words
 
-• What words qualify? Well, that's up to the players - but we recommend:
+What words qualify? Well, that's up to the players - but we recommend:
 
 • 1 syllable of overlapping sound
 
 • or 1 syllable of similar letters
+
+• including short multi-word phrases
 
 
 
