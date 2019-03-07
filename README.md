@@ -1,6 +1,6 @@
 # WordsBlockChain
 
-a fast-paced party game of linking words in a blockchain: http://www.wordsblockchain.com
+a fast-paced party game of linking words in a blockchain: http://www.wordsblockchain.herokuapp.com
 
 <pre style='line-height: 0.5; text-align: center'>
                            

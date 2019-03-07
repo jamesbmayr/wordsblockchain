@@ -70,9 +70,9 @@
 								<meta name="keywords" content="game,word,link,party,fun,chain,blockchain,play"/>\
 								<meta name="author" content="James Mayr"/>\
 								<meta property="og:title" content="WordsBlockChain: a game of linking words"/>\
-								<meta property="og:url" content="http://www.wordsblockchain.com"/>\
+								<meta property="og:url" content="http://www.wordsblockchain.herokuapp.com"/>\
 								<meta property="og:description" content="WordsBlockChain is a fast-paced party game of linking words in a blockchain."/>\
-								<meta property="og:image" content="http://www.wordsblockchain.com/banner.png"/>\
+								<meta property="og:image" content="http://www.wordsblockchain.herokuapp.com/banner.png"/>\
 								<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>'
 					break
 

@@ -58,7 +58,10 @@
 						}
 
 					// where next ?
-						if ((/[.](ico|png|jpg|jpeg|gif|svg|pdf|txt|css|js)$/).test(request.url)) { // serve asset
+						if (request.headers.host !== main.getEnvironment("domain") && request.headers.host !== main.getEnvironment("domain") + ":" + main.getEnvironment("port")) {
+							_302("https://" + main.getEnvironment("domain"))
+						}
+						else if ((/[.](ico|png|jpg|jpeg|gif|svg|pdf|txt|css|js)$/).test(request.url)) { // serve asset
 							routeRequest()
 						}
 						else { // get session and serve html
