@@ -247,5 +247,15 @@
 							}
 						} catch (error) {}
 					}
+
+				// ping
+					if (socket.pingLoop) {
+						clearInterval(socket.pingLoop)
+					}
+					socket.pingLoop = setInterval(function() {
+						fetch("/ping", {method: "GET"})
+							.then(function(response){ return response.json() })
+							.then(function(data) {})
+					}, 60 * 1000)
 			} catch (error) {}
 		}

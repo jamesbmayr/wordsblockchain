@@ -58,8 +58,8 @@
 						}
 
 					// where next ?
-						if (request.headers.host !== main.getEnvironment("domain") && request.headers.host !== main.getEnvironment("domain") + ":" + main.getEnvironment("port")) {
-							_302("https://" + main.getEnvironment("domain"))
+						if ((/^\/ping\/?$/).test(request.url)) { // ping
+							routeRequest()
 						}
 						else if ((/[.](ico|png|jpg|jpeg|gif|svg|pdf|txt|css|js)$/).test(request.url)) { // serve asset
 							routeRequest()
@@ -79,6 +79,17 @@
 					// assets
 						if (!request.session) {
 							switch (true) {
+								// ping
+									case (/^\/ping\/?$/).test(request.url):
+										try {
+											response.writeHead(200, {
+												"Content-Type": "text/json"
+											})
+											response.end( JSON.stringify({success: true, timestamp: new Date().getTime()}) )
+										}
+										catch (error) {_403(error)}
+									break
+
 								// logo
 									case (/\/favicon[.]ico$/).test(request.url):
 									case (/\/icon[.]png$/).test(request.url):
